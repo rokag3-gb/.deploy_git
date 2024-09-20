@@ -1,0 +1,875 @@
+
+
+<!DOCTYPE html>
+<html lang="ko-KR" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon_Jayden.jpg">
+  <link rel="icon" href="/img/favicon_Jayden.jpg">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="GarlicBread">
+  <meta name="keywords" content="IT,Dev,Cloud,DB,.NET,Go,Python">
+  
+    <meta name="description" content="AWS DMS를 활용하여 Oracle에서 MySQL로 DB 마이그레이션 하기">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AWS DMS를 활용하여 Oracle에서 MySQL로 DB 마이그레이션 하기">
+<meta property="og:url" content="https://rokag3-gb.github.io/2020/11/aws-dms-from-ora-to-mysql/index.html">
+<meta property="og:site_name" content="GarlicBread Blog">
+<meta property="og:description" content="AWS DMS를 활용하여 Oracle에서 MySQL로 DB 마이그레이션 하기">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://rokag3-gb.github.io/img/aws-dms-2020-11/toon.png">
+<meta property="article:published_time" content="2020-11-19T15:00:00.000Z">
+<meta property="article:modified_time" content="2024-09-20T02:07:19.899Z">
+<meta property="article:author" content="GarlicBread">
+<meta property="article:tag" content="AWS DMS">
+<meta property="article:tag" content="DB migration">
+<meta property="article:tag" content="Database Migrtation Service">
+<meta property="article:tag" content="SCT">
+<meta property="article:tag" content="Schema Conversion Tool">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://rokag3-gb.github.io/img/aws-dms-2020-11/toon.png">
+  
+  
+  
+  <title>AWS DMS를 활용하여 Oracle에서 MySQL로 DB 마이그레이션 하기 - GarlicBread Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"rokag3-gb.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":30,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 35vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>GarlicBread Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Startseite</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Kategorien</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Schlagwörter</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>Über</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/jeju_seongsan.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.6)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="AWS DMS를 활용하여 Oracle에서 MySQL로 DB 마이그레이션 하기"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        GarlicBread
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-11-20 00:00" pubdate>
+          2020-11-20
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          7 minuten
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">AWS DMS를 활용하여 Oracle에서 MySQL로 DB 마이그레이션 하기</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="시작하기-전에"><a href="#시작하기-전에" class="headerlink" title="시작하기 전에"></a>시작하기 전에</h2><p>현대차, 카카오, KT, 대한항공 등 에서 촉발된 탈(脫) Oracle 프로젝트(escape from oracle)는 오픈소스 DB, 클라우드 DB 의 안정성이 높아지면서 국내 뿐만 아니라 해외에서 먼저 트렌드로 자리 잡았으나, 그럼에도 불구하고 현존 RDBMS 중 성능 최강인 (가격도 최강) Oracle 을 100% 대체할 수 있는 RDBMS는 안타깝게도 아직까지는 없다고 생각합니다.</p>
+<p>(2020년말기준) 그렇기 때문에 Oracle에서 벗어나려면 Oracle에서만 지원하는 기능을 어떻게 타겟DB에서 대체 또는 구현할지 에 대한 깊은 고민이 필요합니다.</p>
+<p>이번 C고객사에서는 시범적으로 기존 온프레미스 Oracle 의 레플리카를 퍼블릭 클라우드 환경으로 마이그레이션 하여 향후에 있을 감사 등 에 대응할 수 있길 원하셨습니다. 미션 크리티컬한 서비스 DB 가 아니여서 다운타임에 대한 고려가 불필요했습니다. 빗발치는 OLTP 가 발생하지 않는 DB의 마이그레이션이라… 꿀냄새가 진동하네요.</p>
+<p><img src="/img/aws-dms-2020-11/toon.png" srcset="/img/loading.gif" lazyload><br><code>Close your eyes and hope for the best.</code> AWS에서 제공하는 DB 이관 도구는 꽤나 강력합니다.</p>
+<h2 id="사전-검토"><a href="#사전-검토" class="headerlink" title="사전 검토"></a>사전 검토</h2><ul>
+<li><p>소스 DB 체크  </p>
+<ul>
+<li>버전: Oracle 11g Enterprise (Release 11.2.0.4.0) on TNS for Linux - 64bit</li>
+<li>총용량(1TiB 가량)</li>
+<li>오브젝트 현황 파악</li>
+</ul>
+</li>
+<li><p>타겟 DB 체크  </p>
+<ul>
+<li>버전: MySQL 8.0.21 on Amazon Linux 2 - 64bit</li>
+<li>EC2 인스턴스 유형: r5.4xlarge (vCPUs: 16, 메모리: 128GiB)</li>
+</ul>
+</li>
+<li><p>AWS 콘솔에서 작업자 접속용 EC2 인스턴스 생성 (이하 작업콘솔)</p>
+</li>
+<li><p>작업콘솔 에서 소스, 타겟 접속 가능하도록 가상 네트워크 구성 및 방화벽 설정</p>
+</li>
+<li><p>작업 절차 거버넌스</p>
+<ul>
+<li>Schema Conversion Tool (이하 SCT) 로 스키마 이관</li>
+<li>Database Migration Service (이하 DMS) 로 데이터 이관</li>
+<li>미싱 스키마, 미싱 데이터 수동 점검</li>
+</ul>
+</li>
+<li><p>Procedure, fucntion, sequence 는 마이그레이션 대상에서 제외</p>
+</li>
+<li><p>별도의 SSL 구성은 하지 않음</p>
+</li>
+</ul>
+<h2 id="마이그레이션-아키텍쳐"><a href="#마이그레이션-아키텍쳐" class="headerlink" title="마이그레이션 아키텍쳐"></a>마이그레이션 아키텍쳐</h2><p><img src="/img/aws-dms-2020-11/architecture.png" srcset="/img/loading.gif" lazyload></p>
+<ol>
+<li>작업콘솔의 SCT에서 소스의 스키마를 DDL 형태로 로드하여 타겟에 적용합니다.</li>
+<li>AWS 콘솔에서 DMS 내에 필요한 리소스를 셋팅 합니다. (복제 인스턴스, 소스&#x2F;타겟 엔드포인트 생성)</li>
+<li>DMS 내에 여러 마이그레이션 태스크를 소스 스키마 단위로 생성하고 일괄 실행합니다.</li>
+<li>소스, 타겟에 직접 SQL을 실행하여 전체 오브젝트 현황을 비교하고 검증합니다.</li>
+</ol>
+<h2 id="1-작업-콘솔-셋팅"><a href="#1-작업-콘솔-셋팅" class="headerlink" title="1. 작업 콘솔 셋팅"></a>1. 작업 콘솔 셋팅</h2><p>자, 이제 사전 검토했고 아키텍쳐 파악했으니, 실제로 시작해봅시다.</p>
+<ol>
+<li>AWS 콘솔에서 퍼블릭 IPv4 와 RDP port 를 확인하여 작업콘솔에 원격 접속 합니다.</li>
+</ol>
+<p><img src="/img/aws-dms-2020-11/aws_01.png" srcset="/img/loading.gif" lazyload></p>
+<ol start="2">
+<li>작업콘솔에서 소스 검증을 위하여 SQL Developer 설치 후 소스DB 접속 테스트를 합니다.</li>
+</ol>
+<p><img src="/img/aws-dms-2020-11/sqldeveloper.png" srcset="/img/loading.gif" lazyload></p>
+<ol start="3">
+<li>작업콘솔에서 타겟 검증을 위하여 WorkBench 설치 후 타겟DB 접속 테스트를 합니다.</li>
+</ol>
+<p><img src="/img/aws-dms-2020-11/workbench.png" srcset="/img/loading.gif" lazyload></p>
+<ol start="4">
+<li>작업콘솔에서 스키마 이관을 위하여 SCT 설치 후 소스, 타겟 접속 테스트를 합니다. SCT &gt; New Project wizard IU 입니다. Source engine 의 기본값이 Oracle인 것이 흥미롭습니다.</li>
+</ol>
+<p><img src="/img/aws-dms-2020-11/sct_01.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="2-타겟-DB-셋팅"><a href="#2-타겟-DB-셋팅" class="headerlink" title="2. 타겟 DB 셋팅"></a>2. 타겟 DB 셋팅</h2><h3 id="2-1-Buffer-pool"><a href="#2-1-Buffer-pool" class="headerlink" title="2.1. Buffer pool"></a>2.1. Buffer pool</h3><p>DMS가 타겟DB에 값을 쓸 때 버퍼캐쉬 크기가 처리 성능을 크게 좌우합니다. 디폴트값(128MB)에서 일시적으로 서버 메모리 한도 내에서 최대한으로 설정하도록 권장 드립니다. 금번 프로젝트의 경우 64GiB 로 설정하여 진행했습니다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- buffer pool size 확인 (GiB)</span><br><span class="hljs-keyword">SELECT</span> @<span class="hljs-variable">@innodb_buffer_pool_size</span> <span class="hljs-operator">/</span> <span class="hljs-number">1024</span> <span class="hljs-operator">/</span> <span class="hljs-number">1024</span> <span class="hljs-operator">/</span> <span class="hljs-number">1024</span>;<br></code></pre></td></tr></table></figure>
+
+<p>※ Innodb buffer pool size가 쓰기 성능에 얼만큼 영향이 큰지 테스트한 블로그 링크 참고 바랍니다.<br>출처: <a target="_blank" rel="noopener" href="https://santander.co.kr/151">innodb mysql&#x2F;mariadb insert 속도 높이기</a></p>
+<h3 id="2-2-Timezone"><a href="#2-2-Timezone" class="headerlink" title="2.2. Timezone"></a>2.2. Timezone</h3><p>타겟 EC2 에 MySQL 바이너리 설치한 초기 상태에서는 timezone 을 소스와 동일한 timezone 으로 설정해주어야 합니다. 먼저 소스 DB의 timezone을 확인합니다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span>   DBTIMEZONE,<br>   SESSIONTIMEZONE<br><span class="hljs-keyword">FROM</span>  DUAL;<br></code></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>DBTIMEZONE</th>
+<th>SESSIONTIMEZONE</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>+09:00</td>
+<td>UTC</td>
+</tr>
+</tbody></table>
+<p>소스DB의 timezone 은 UTC + 09:00 인 Korea Standard Time(KST) 인 것을 확인 했습니다. 타겟DB에 Asia&#x2F;Seoul timezone이 존재하는지 아래 SQL문을 실행해봅니다.</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-comment">-- 타겟DB timezone 중에 &#x27;Seoul&#x27;이 존재하는지 확인</span><br><span class="hljs-keyword">SELECT</span>  B.NAME,A.TIME_ZONE_ID<br><span class="hljs-keyword">FROM</span>    MYSQL.TIME_ZONE A<br>        <span class="hljs-keyword">INNER</span> <span class="hljs-keyword">JOIN</span> MYSQL.TIME_ZONE_NAME B <span class="hljs-keyword">ON</span> A.TIME_ZONE_ID = B.TIME_ZONE_ID<br><span class="hljs-keyword">WHERE</span>   B.NAME <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;%Seoul&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<p><code>Asia/Seoul</code> timezone이 존재하지 않는다면 타겟 EC2 에 다음과 같은 명령을 실행합니다.<br><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/mysql-tzinfo-to-sql.html">MySQL 8.0 참조 매뉴얼 &#x2F; … &#x2F; mysql_tzinfo_to_sql — 시간대 테이블로드</a></p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmd">mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql<br></code></pre></td></tr></table></figure>
+
+<p>타겟DB 설치경로 안에 <code>/etc/my.cnf</code> 또는 <code>/etc/my.cnf.d/</code> 경로 안에 my.cnf 파일 또는 my.ini 파일을 열어 안에 다음 내용을 추가해줍니다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cnf">[mysqld]<br>default-time-zone=Asia/Seoul<br></code></pre></td></tr></table></figure>
+
+<p>소스DB의 timezone에 맞춰 타겟DB 의 timezone 을 Asia&#x2F;Seoul(KST) 로 변경해주어야 합니다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SET</span> <span class="hljs-keyword">GLOBAL</span> time_zone <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;Asia/Seoul&#x27;</span>;<br><br><span class="hljs-comment">-- 변경된 timezone 확인</span><br><span class="hljs-keyword">SELECT</span> @<span class="hljs-variable">@TIME_ZONE</span>, @<span class="hljs-variable">@system_time_zone</span>, @<span class="hljs-variable">@GLOBAL</span>.TIME_ZONE, @<span class="hljs-variable">@SESSION</span>.TIME_ZONE;<br></code></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>@@TIME_ZONE</th>
+<th>@@system_time_zone</th>
+<th>@@GLOBAL.TIME_ZONE</th>
+<th>@@SESSION.TIME_ZONE</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>+09:00</td>
+<td>KST</td>
+<td>+09:00</td>
+<td>+09:00</td>
+</tr>
+</tbody></table>
+<p>정상적으로 적용되어 있는 것 확인 완료요!<br>※ MySQL on RDS 는 AWS 콘솔에서 Parameter Group 생성 및 적용하여 비교적 간단하게 변경 가능합니다.</p>
+<h3 id="2-3-Charset"><a href="#2-3-Charset" class="headerlink" title="2.3. Charset"></a>2.3. Charset</h3><p>소스DB의 charset을 확인하여 타겟DB에 적용해주도록 합니다. 데이터를 이관하기 전에 신중히 결정해야할 사항이며 이관 완료 이후에 charset, collation 변경 작업은 지옥문을 여는 경험이 될 수 있습니다. 일단 먼저 소스 DB의 charset을 확인합니다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span>  NAME, <span class="hljs-keyword">VALUE</span>$<br><span class="hljs-keyword">FROM</span>    SYS.PROPS$<br><span class="hljs-keyword">WHERE</span>   NAME <span class="hljs-keyword">IN</span> (<span class="hljs-string">&#x27;NLS_LANGUAGE&#x27;</span><br>    ,<span class="hljs-string">&#x27;NLS_DATE_LANGUAGE&#x27;</span><br>    ,<span class="hljs-string">&#x27;NLS_CHARACTERSET&#x27;</span><br>    ,<span class="hljs-string">&#x27;NLS_NCHAR_CHARACTERSET&#x27;</span>);<br><br><span class="hljs-keyword">SELECT</span>  <span class="hljs-keyword">PARAMETER</span>, <span class="hljs-keyword">VALUE</span><br><span class="hljs-keyword">FROM</span>    NLS_DATABASE_PARAMETERS<br><span class="hljs-keyword">WHERE</span>   <span class="hljs-keyword">PARAMETER</span> <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;NLS_CHARACTERSET&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>result[0]</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>NAME</th>
+<th>VALUE$</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NLS_NCHAR_CHARACTERSET</td>
+<td>AL16UTF16</td>
+</tr>
+<tr>
+<td>NLS_LANGUAGE</td>
+<td>AMERICAN</td>
+</tr>
+<tr>
+<td>NLS_DATE_LANGUAGE</td>
+<td>AMERICAN</td>
+</tr>
+<tr>
+<td>NLS_CHARACTERSET</td>
+<td><code>KO16KSC5601</code></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>result[1]</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>PARAMETER</th>
+<th>VALUE</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NLS_CHARACTERSET</td>
+<td><code>KO16KSC5601</code></td>
+</tr>
+</tbody></table>
+<p>NLS_CHARACTERSET 이 <code>KO16KSC5601</code>에 대응되는 charset 은 EUCKR, 또는 커버리지가 더 넓은 UTF8을 생각해볼 수 있습니다. charset EUCKR 에 대한 collation 은 EUCKR_KOREAN_CI, EUCKR_BIN 이 있는데 대소문자가 구별되는 이유로 EUCKR_BIN 이 적합합니다.</p>
+<ul>
+<li><code>EUCKR_BIN</code>: 한국어, 바이너리, 대소문자 구분함</li>
+<li><code>EUCKR_KOREAN_CI</code>: 한국어, 대소문자 구분 안함</li>
+</ul>
+<p>Charset EUCKR, collation EUCKR_BIN을 결정했으니 이제 서버에 아래 명령을 실행해줍니다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ vi /etc/mysql/my.cnf<br></code></pre></td></tr></table></figure>
+
+<p>파일 내용의 마지막에 다음 부분을 덧붙여준 후 :wq 로 저장 후 닫아줍니다. 그리고 서비스를 재시작하면 적용됩니다.</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[client]</span><br><span class="hljs-attr">default-character-set</span>=euckr<br><br><span class="hljs-section">[mysql]</span><br><span class="hljs-attr">default-character-set</span>=euckr<br><br><span class="hljs-section">[mysqld]</span><br><span class="hljs-attr">collation-server</span> = euckr_bin<br><span class="hljs-attr">init-connect</span>=<span class="hljs-string">&#x27;SET NAMES euckr&#x27;</span><br><span class="hljs-attr">character-set-server</span> = euckr<br></code></pre></td></tr></table></figure>
+
+<p>Charset, collation 도 설정 완료했습니다. 😅</p>
+<h2 id="3-SCT로-스키마-이관"><a href="#3-SCT로-스키마-이관" class="headerlink" title="3. SCT로 스키마 이관"></a>3. SCT로 스키마 이관</h2><p><img src="/img/aws-dms-2020-11/flow_sct.png" srcset="/img/loading.gif" lazyload></p>
+<p>소스에서 SCT로 이관할 스키마를 선택하고 Next를 클릭합니다. 선택한 스키마 내에 전체 오브젝트 개수에 비례하여 시간이 오래 걸릴 수 있습니다.</p>
+<p><img src="/img/aws-dms-2020-11/sct_02.png" srcset="/img/loading.gif" lazyload></p>
+<p>소스 스키마에 대한 로드 작업이 끝나면 여러가지 타겟의 종류 별로 몇개가 이관 가능한지, 몇개는 수동 조치를 취해야 하는지 전체 조사한 Database migration assessment report를 보여줍니다. pdf로도 다운로드 가능하며, 전체적으로 한번 훑어보고 Next를 클릭합니다.<br><em>(Procedure, funcion, sequence 는 migrating 대상이 아니므로 부담없이 Next클릭)</em></p>
+<p><img src="/img/aws-dms-2020-11/sct_03.png" srcset="/img/loading.gif" lazyload></p>
+<p>SCT 관점에서 타겟의 엔진이 MySQL 인 것이 의미가 있고, RDS 또는 EC2 중 어떤 것인지는 중요하지 않기 때문에 Amazon RDS for MySQL을 선택하고 타겟의 접속정보 입력 후 Test connection, 접속 성공하면 Next를 클릭합니다.</p>
+<p><img src="/img/aws-dms-2020-11/sct_04.png" srcset="/img/loading.gif" lazyload></p>
+<p>소스(좌측)에서 DDL을 추출할 스키마와 개체유형을 선택하고 Convert schema를 클릭합니다. 타겟(우측)에서 선택 체크된 항목들에 대해서 DDL을 적용하려면 Apply to database를 클릭하면 타겟 DB에 실제로 DDL이 적용됩니다.</p>
+<p><img src="/img/aws-dms-2020-11/sct_05.png" srcset="/img/loading.gif" lazyload></p>
+<p>타겟 DB에 아래 SQL을 실행해서 정상적으로 스키마가 적용되어 있는지 확인합니다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span>    A.TABLE_SCHEMA, A.TABLE_NAME, A.TABLE_COLLATION, A.TABLE_COMMENT,<br>     I.INDEX_COUNT, T.TRIGGER_COUNT<br><span class="hljs-keyword">FROM</span>    INFORMATION_SCHEMA.TABLES A<br>     <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">JOIN</span> <span class="hljs-keyword">LATERAL</span> ( <span class="hljs-comment">-- like OUTER APPLY</span><br>     <span class="hljs-keyword">SELECT</span>    <span class="hljs-built_in">COUNT</span>(<span class="hljs-keyword">DISTINCT</span> I.INDEX_NAME) <span class="hljs-keyword">AS</span> INDEX_COUNT<br>     <span class="hljs-keyword">FROM</span>    INFORMATION_SCHEMA.STATISTICS I<br>     <span class="hljs-keyword">WHERE</span>    I.TABLE_SCHEMA <span class="hljs-operator">=</span> A.TABLE_SCHEMA<br>     <span class="hljs-keyword">AND</span>    I.TABLE_NAME <span class="hljs-operator">=</span> A.TABLE_NAME<br>     LIMIT <span class="hljs-number">1</span><br>     ) I <span class="hljs-keyword">ON</span> <span class="hljs-number">1</span> <span class="hljs-operator">=</span> <span class="hljs-number">1</span><br>     <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">JOIN</span> <span class="hljs-keyword">LATERAL</span> (<br>     <span class="hljs-keyword">SELECT</span>    <span class="hljs-built_in">COUNT</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">AS</span> TRIGGER_COUNT<br>     <span class="hljs-keyword">FROM</span>    INFORMATION_SCHEMA.TRIGGERS T<br>     <span class="hljs-keyword">WHERE</span>    T.TRIGGER_SCHEMA <span class="hljs-operator">=</span> A.TABLE_SCHEMA<br>     <span class="hljs-keyword">AND</span>    T.EVENT_OBJECT_TABLE <span class="hljs-operator">=</span> A.TABLE_NAME<br>     LIMIT <span class="hljs-number">1</span><br>     ) T <span class="hljs-keyword">ON</span> <span class="hljs-number">1</span> <span class="hljs-operator">=</span> <span class="hljs-number">1</span><br><span class="hljs-keyword">WHERE</span>    A.TABLE_SCHEMA <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;%&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<p><img src="/img/aws-dms-2020-11/wb_resultset.png" srcset="/img/loading.gif" lazyload></p>
+<p>※ 타겟DB가 MySQL 인 경우 테이블과 컬럼의 comment가 SCT로 이관되지 않음을 확인했습니다. 금번 프로젝트 진행하면서 AWS 케이스 오픈을 통하여 정식 요청하였으며, 추후 픽스될 것으로 보입니다.</p>
+<p>SCT에 대한 상세한 가이드는 <a target="_blank" rel="noopener" href="https://docs.aws.amazon.com/ko_kr/SchemaConversionTool/latest/userguide/CHAP_Welcome.html">AWS Schema Conversion Tool User Guide</a> 를 참고 바랍니다.</p>
+<p>만약 SCT로 trigger 까지 이관시켰다면 DMS 태스크 실행 시 trigger로 인해 오류가 떨어지고 태스크가 멈출 수 있으므로 trigger 를 백업받아놓고 모두 제거하는 것을 추천드립니다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- 트리거 리스트 출력</span><br><span class="hljs-keyword">SHOW</span> TRIGGERS;<br><br><span class="hljs-comment">-- SCT 가 이관해준 트리거 소스는 메모장에 백업해놓고 모두 제거</span><br><span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TRIGGER</span> <span class="hljs-operator">&lt;</span>SCHEMA_NAME<span class="hljs-operator">&gt;</span>.<span class="hljs-operator">&lt;</span>TABLE_NAME<span class="hljs-operator">&gt;</span>.<span class="hljs-operator">&lt;</span>TRIGGER_NAME<span class="hljs-operator">&gt;</span>;<br></code></pre></td></tr></table></figure>
+
+<p>다시 한번 강조하지만 DMS로 데이터를 들이부은 이후에는 charset, collation 을 변경하는 데에 굉장히 긴 시간이 소요될 수 있습니다. 그래서 SCT 작업 끝나고 DMS 작업을 시작하기 이전에 아래 쿼리를 다시 실행해주면 세상 시원하겠습니다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">ALTER</span> DATABASE <span class="hljs-operator">&lt;</span>database_name<span class="hljs-operator">&gt;</span> <span class="hljs-type">CHARACTER</span> <span class="hljs-keyword">SET</span> <span class="hljs-operator">=</span> EUCKR <span class="hljs-keyword">COLLATE</span> <span class="hljs-operator">=</span> EUCKR_BIN;<br><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-operator">&lt;</span>table_name<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">CONVERT</span> <span class="hljs-keyword">TO</span> <span class="hljs-type">CHARACTER</span> <span class="hljs-keyword">SET</span> EUCKR <span class="hljs-keyword">COLLATE</span> EUCKR_BIN;<br></code></pre></td></tr></table></figure>
+
+<p><img src="/img/aws-dms-2020-11/doubleaction.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="4-DMS로-데이터-이관"><a href="#4-DMS로-데이터-이관" class="headerlink" title="4. DMS로 데이터 이관"></a>4. DMS로 데이터 이관</h2><p><img src="/img/aws-dms-2020-11/flow_dms.png" srcset="/img/loading.gif" lazyload></p>
+<p>이제 본격적으로 DMS로 데이터를 넘겨볼껀데요. 그전에 복제 인스턴스, 엔드포인트, 마이그레이션 태스크를 생성해야 합니다.</p>
+<p>먼저, 복제 인스턴스는 아래 사양으로 생성했습니다.</p>
+<ul>
+<li>클래스: dms.c4.4xlarge<br><del>(처음에는 c4.large였다가 너무 느려 속 터져서 업그레이드)</del></li>
+<li>vCPUs: 8</li>
+<li>메모리: 30GiB</li>
+<li>전용EBS 대역폭: 2,000Mbps</li>
+<li>할당 스토리지: 1000GiB</li>
+</ul>
+<p><img src="/img/aws-dms-2020-11/dms_01.png" srcset="/img/loading.gif" lazyload></p>
+<p>엔드포인트는 유형에 따라 소스 1개, 대상 2개로 생성했습니다. 소스DB, 타겟DB 의 접속정보를 각각 알맞게 넣어주고 테스트 실행을 해봅니다.</p>
+<p><img src="/img/aws-dms-2020-11/dms_02.png" srcset="/img/loading.gif" lazyload></p>
+<p>마이그레이션 태스크는 아래 캡처대로 순서대로 값을 입력합니다.</p>
+<ul>
+<li>태스크 식별자: 식별할 수 있는 이름</li>
+<li>복제 인스턴스: 복제 인스턴스 선택</li>
+<li>소스 엔드포인트: 소스DB 엔드포인트 선택</li>
+<li>대상 엔드포인트: 타겟DB 엔드포인트 선택</li>
+<li>마이그레이션 유형: <code>기존 데이터 마이그레이션</code> 선택<br>(기존 데이터를 일회성으로 마이그레이션할 것이기 때문에)</li>
+<li>태스크 설정 편집모드: <code>마법사</code></li>
+<li>대상 테이블 준비 모드: 아무 작업 안 함<br>※ <code>대상에서 테이블 삭제</code> 는 DDL(drop &amp; create)을 실행하기 때문에 charset, collation, trigger 등이 원래대로 생성될 수 있음</li>
+<li>복제에 LOB 열 포함: <code>전제 LOB 모드</code></li>
+<li>LOB 청크 크기: 64</li>
+<li>검증 활성화: Y</li>
+<li>CloudWatch 로그 활성화: Y<br>※ 그외 CloudWatch 관련 설정들은 모두 <code>기본값</code></li>
+<li>테이블 매핑 편집모드: <code>마법사</code></li>
+<li>선택 규칙 &gt; <code>새 선택 규칙 추가</code> &gt; 스키마 입력 &gt; 테이블 이름 (필요에 따라 입력, % 는 전체 테이블)</li>
+<li>마이그레이션 전 평가: N</li>
+<li>마이그레이션 태스크 시작 구성: <code>나중에 수동으로</code></li>
+<li>태그: (필요한 경우에 입력, 많이 입력할수록 추후에 찾기 용이함)</li>
+<li><code>태스크 생성</code> 클릭</li>
+</ul>
+<p><img src="/img/aws-dms-2020-11/dms_03.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/img/aws-dms-2020-11/dms_04.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/img/aws-dms-2020-11/dms_05.png" srcset="/img/loading.gif" lazyload></p>
+<p>마이그레이션 해야할 스키마 갯수, 테이블 갯수에 따라 상황이 다르겠지만, 금번 프로젝트에서는 스키마 이름 단위로 태스크를 생성하여 마이그레이션을 진행했습니다. (테이블 이름은 % 로 그냥 둔채로)</p>
+<p>스키마 갯수 대로 태스크를 생성해놓은 다음 태스크들을 일괄로 <code>시작</code>을 눌러줍니다.</p>
+<p><img src="/img/aws-dms-2020-11/dms_06.png" srcset="/img/loading.gif" lazyload></p>
+<p>상태 값은 준비중, 로드중, 로드완료 등의 값들이 올 수 있으며, 아무 오류 없이 완료 되면 <code>로드 완료</code>로 바뀌게 됩니다. 이제 우리가 해야할 것은 오로지, <code>Close your eyes and hope for the best</code> 말고는 없습니다.</p>
+<h2 id="5-마이그레이션-검증"><a href="#5-마이그레이션-검증" class="headerlink" title="5. 마이그레이션 검증"></a>5. 마이그레이션 검증</h2><p>데이터까지 마이그레이션이 완료된 후에는 소스, 타겟의 difference 가 존재하는지 검증해봐야 하며 검증 절차는 아래와 같이 구성하였습니다.</p>
+<ol>
+<li>소스, 타겟의 테이블(뷰 포함) 갯수 비교</li>
+<li>소스, 타겟의 테이블 당 row count 비교</li>
+<li>소스, 타겟의 Index 갯수 비교</li>
+<li>소스, 타겟의 Constraint 갯수 비교</li>
+</ol>
+<p>위 절차들의 검증이 모두 끝나고 나면 비로소 DB 마이그레이션 작업이 완료됐다고 볼 수 있습니다. 아래 이미지는 Google sheet로 기록해놓았던 이관진행 문서입니다.</p>
+<p><img src="/img/aws-dms-2020-11/validation.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="작업을-마치며"><a href="#작업을-마치며" class="headerlink" title="작업을 마치며"></a>작업을 마치며</h2><p>그동안 Youtube로만 접했던 AWS의 DMS, SCT를 직접 사용해보니 아주 약간의 버그성 동작과 모호한 UI 로 인해 작업 초반에는 생산성이 떨어졌던 것이 사실이나, 소스&#x2F;타겟에서 지원하는 DB engine 종류가 매우 다양하며 특히 데이터를 일괄로 퍼서 넘기는 속도 등 성능이 뛰어나다고 봅니다.</p>
+<p><del>(육아와 DB이관은 캐시템으로 해결하세요.)</del></p>
+<p>향후에 실 서비스 상태의 DB를 마이그레이션 하게 되는 경우 추가로 고려해야 할 것들을 대략 정리해봤습니다.</p>
+<ol>
+<li>다운타임 최소화</li>
+<li>지속적인 변경 사항 복제 시 지연시간 최소화</li>
+<li>실패 시 roll-back 방안</li>
+</ol>
+<p>전통적인 DB 마이그레이션 작업은 일부 DBA, 일부 DB개발자 들만의 야간 작업으로 많이 치부되어오곤 했었습니다. 마이그레이션 진행 시 철야는 물론이었고, 스크립트 수작업하는 경우도 부지기수 였고, 경험 많은 DBA가 없으면 심각한 예외상황에 직면했을 경우 롤백하는 경우도 많았었지요.</p>
+<p>AWS DMS의 경우 AWS콘솔에서 누구나 쉽게 이해하고 사용할 수 있도록 구성되어 있어서, 이제 앞으로의 DB 마이그레이션은 기성 DBA 들만의 작업이 아닐 수 있겠다는 생각이 들었네요.</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/DB/" class="category-chain-item">DB</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AWS-DMS/" class="print-no-link">#AWS DMS</a>
+      
+        <a href="/tags/DB-migration/" class="print-no-link">#DB migration</a>
+      
+        <a href="/tags/Database-Migrtation-Service/" class="print-no-link">#Database Migrtation Service</a>
+      
+        <a href="/tags/SCT/" class="print-no-link">#SCT</a>
+      
+        <a href="/tags/Schema-Conversion-Tool/" class="print-no-link">#Schema Conversion Tool</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/04/sprint-experience/" title="스프린트, 직접 해본 이야기">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">스프린트, 직접 해본 이야기</span>
+                        <span class="visible-mobile">Vorheriger</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2017/01/floating-point/" title="부동 소수점은 표현상 효율적이지만, 정확하진 않다.">
+                        <span class="hidden-mobile">부동 소수점은 표현상 효율적이지만, 정확하진 않다.</span>
+                        <span class="visible-mobile">Nächster</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script>
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          Fluid.utils.createCssLink('https://lib.baomitu.com/disqusjs/1.3.0/disqusjs.css');
+          Fluid.utils.createScript('https://lib.baomitu.com/disqusjs/1.3.0/disqus.js', function() {
+            new DisqusJS({
+              shortname: 'https-rokag3-gb-github-io',
+              apikey: ''
+            });
+          });
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Inhaltsverzeichnis</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Suchen</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Stichwort</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <p> <div id="current_date"> <script> date = new Date(); year = date.getFullYear(); month = date.getMonth() + 1; day = date.getDate(); document.getElementById("current_date").innerHTML = "ⓒ " + year + "."; </script> Jayden Kim All Rights Reserved. </div> <!--<a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>--> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Hexo Fluid</span></a> </p> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog funktioniert am besten mit aktiviertem JavaScript</div>
+  </noscript>
+</body>
+</html>

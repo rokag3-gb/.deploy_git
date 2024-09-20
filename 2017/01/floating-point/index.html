@@ -1,0 +1,651 @@
+
+
+<!DOCTYPE html>
+<html lang="ko-KR" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon_Jayden.jpg">
+  <link rel="icon" href="/img/favicon_Jayden.jpg">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="GarlicBread">
+  <meta name="keywords" content="IT,Dev,Cloud,DB,.NET,Go,Python">
+  
+    <meta name="description" content="부동 소수점은 표현상 효율적이지만, 정확하진 않다.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="부동 소수점은 표현상 효율적이지만, 정확하진 않다.">
+<meta property="og:url" content="https://rokag3-gb.github.io/2017/01/floating-point/index.html">
+<meta property="og:site_name" content="GarlicBread Blog">
+<meta property="og:description" content="부동 소수점은 표현상 효율적이지만, 정확하진 않다.">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://rokag3-gb.github.io/img/floating-point-2017-01/01.png">
+<meta property="article:published_time" content="2017-01-18T15:00:00.000Z">
+<meta property="article:modified_time" content="2024-09-20T02:13:22.986Z">
+<meta property="article:author" content="GarlicBread">
+<meta property="article:tag" content="부동소수점">
+<meta property="article:tag" content="float">
+<meta property="article:tag" content="자료구조">
+<meta property="article:tag" content="data type">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://rokag3-gb.github.io/img/floating-point-2017-01/01.png">
+  
+  
+  
+  <title>부동 소수점은 표현상 효율적이지만, 정확하진 않다. - GarlicBread Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"rokag3-gb.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":30,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 35vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>GarlicBread Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Startseite</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Kategorien</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Schlagwörter</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>Über</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/jeju_seongsan.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.6)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="부동 소수점은 표현상 효율적이지만, 정확하진 않다."></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        GarlicBread
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2017-01-19 00:00" pubdate>
+          2017-01-19
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          1 minuten
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">부동 소수점은 표현상 효율적이지만, 정확하진 않다.</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="부동-소수점"><a href="#부동-소수점" class="headerlink" title="부동 소수점"></a>부동 소수점</h2><p>부동 소수점에 대해 잘 정리된 포스팅이 있다.<br>부동 소수점 (SQL server 에서는 float, real) 은 표현상 효율적이긴 하나, 정확하진 않다.<br>SQL server 에서는 decimal, numeric, money, smallmoney 가 정확함.</p>
+<p>본 포스트에 기재된 모든 내용은 아래 출처에서 복사해온 내용이며 스터디 목적으로 다시금 곱씹어보았다.</p>
+<p>출처: <a target="_blank" rel="noopener" href="http://thrillfighter.tistory.com/349">http://thrillfighter.tistory.com/349</a></p>
+<h2 id="부동-소수점에-대한-이해"><a href="#부동-소수점에-대한-이해" class="headerlink" title="부동 소수점에 대한 이해"></a>부동 소수점에 대한 이해</h2><p>부동 소수점 표현은 아주 큰 수와 아주 작은 수를 효율적으로 표현하기 위해서 사용한다. 여기서 효율적이란 표현은 정확하다는 표현은 아니고 효율적일 수록 오차가 발생하기 마련이다. 우선 부동소수점 표현을 어떤 방식으로 하는지 이해하고, 오차가 발생할 수 밖에 없는 원리도 이해해보자.</p>
+<p>우선 우리가 10진수를 10으로 나누거나 곱하면 소수점의 위치를 변경할 수 있다. 이와 마찬가지로 2진수 또한 2로 나누거나 곱하면 소수점 위치가 한 칸씩 이동된다. (자세한 설명은 하지 않겠지만, 이 원리를 이용해 진수변환도 한다는 것을 알아 두자.) 부동 소수점은 이런 원리를 이용해서 소수점의 위치를 나타낸다.</p>
+<p>예를 들어 1001.1011 이란 수가 있다면, 부동 소수점은 이 수를 1.0011011 * 2^ 으로 표현 한다.<br>여기서 3은 위에서 설명한 원리를 통해 소수점의 위치를 정하게 되고 앞에 1.0011011은 1001.1011을 정규화한 것이다.</p>
+<h2 id="정규화-방법"><a href="#정규화-방법" class="headerlink" title="정규화 방법"></a>정규화 방법</h2><p><img src="/img/floating-point-2017-01/01.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="지수부"><a href="#지수부" class="headerlink" title="지수부"></a>지수부</h2><p><img src="/img/floating-point-2017-01/02.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="바이어스-상수"><a href="#바이어스-상수" class="headerlink" title="바이어스 상수"></a>바이어스 상수</h2><p><img src="/img/floating-point-2017-01/03.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/img/floating-point-2017-01/04.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="부동-소수점의-오차"><a href="#부동-소수점의-오차" class="headerlink" title="부동 소수점의 오차"></a>부동 소수점의 오차</h2><p>부동 소수점은 적은 비트로 큰 수를 표현할 수 있지만, 이런 효율성은 정확성을 떨어뜨릴 수 밖에 없다. float의 가수부의 크기는 23bit인데, 23은 실제로 값자리수(길이)를 나타낸다. 부동 소수점의 표현 방식상 정수값 자리수가 23을 넘어가게 되면 소수점 이동이 23(가수의 길이)이 넘어가므로 가수부의 길이를 초과하여 소수점 이하를 표현할 길이 없어진다. 길이를 넘어가게 되면 가수의 마지막 자리 값은 넘어간 수만큼의 0이 생긴다.</p>
+<p>지수값이 24인 경우 0이 하나 생겼다. 2진수의 LSD(least significant Digit)가 무조건 0이기 때문에 홀수를 표현할 수 없다.</p>
+<p>지수값이 25가 되면 0이 두개 생긴다. 따라서 4의 배수만 표현된다. 이런 식으로 오차가 점점 늘어나는데, 사실 이런 오차는 지수값이 23이넘어가면 값의 크기에 비해서 아주 작은 값이 되므로 그렇게 큰 차이는 아니지만, 정밀도가 떨어질 수밖에 없다. 따라서 double 타입의 자료형을 사용하면 이런 오차를 좀 더 줄일 수 있다.</p>
+<hr>
+<p>아래는 부동 소수점에 대한 위키백과 내용 입니다.  </p>
+<p><a target="_blank" rel="noopener" href="https://ko.wikipedia.org/wiki/%EB%B6%80%EB%8F%99%EC%86%8C%EC%88%98%EC%A0%90">https://ko.wikipedia.org/wiki/부동소수점</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CS/" class="category-chain-item">CS</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/CS/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0/" class="category-chain-item">자료구조</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%EB%B6%80%EB%8F%99%EC%86%8C%EC%88%98%EC%A0%90/" class="print-no-link">#부동소수점</a>
+      
+        <a href="/tags/float/" class="print-no-link">#float</a>
+      
+        <a href="/tags/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0/" class="print-no-link">#자료구조</a>
+      
+        <a href="/tags/data-type/" class="print-no-link">#data type</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/11/aws-dms-from-ora-to-mysql/" title="AWS DMS를 활용하여 Oracle에서 MySQL로 DB 마이그레이션 하기">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">AWS DMS를 활용하여 Oracle에서 MySQL로 DB 마이그레이션 하기</span>
+                        <span class="visible-mobile">Vorheriger</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2016/03/sql-agent-sp-purge-jobhistory/" title="SQL Agent 기록 제거에 대한 오해">
+                        <span class="hidden-mobile">SQL Agent 기록 제거에 대한 오해</span>
+                        <span class="visible-mobile">Nächster</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script>
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          Fluid.utils.createCssLink('https://lib.baomitu.com/disqusjs/1.3.0/disqusjs.css');
+          Fluid.utils.createScript('https://lib.baomitu.com/disqusjs/1.3.0/disqus.js', function() {
+            new DisqusJS({
+              shortname: 'https-rokag3-gb-github-io',
+              apikey: ''
+            });
+          });
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Inhaltsverzeichnis</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Suchen</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Stichwort</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <p> <div id="current_date"> <script> date = new Date(); year = date.getFullYear(); month = date.getMonth() + 1; day = date.getDate(); document.getElementById("current_date").innerHTML = "ⓒ " + year + "."; </script> Jayden Kim All Rights Reserved. </div> <!--<a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>--> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Hexo Fluid</span></a> </p> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog funktioniert am besten mit aktiviertem JavaScript</div>
+  </noscript>
+</body>
+</html>

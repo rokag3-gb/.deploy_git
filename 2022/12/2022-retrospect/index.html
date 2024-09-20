@@ -1,0 +1,669 @@
+
+
+<!DOCTYPE html>
+<html lang="ko-KR" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon_Jayden.jpg">
+  <link rel="icon" href="/img/favicon_Jayden.jpg">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="GarlicBread">
+  <meta name="keywords" content="IT,Dev,Cloud,DB,.NET,Go,Python">
+  
+    <meta name="description" content="생동감 있는 개발 조직에서 격변의 시간을 보낸 틀딱 개발자의 2022년 회고">
+<meta property="og:type" content="article">
+<meta property="og:title" content="생동감 있는 개발 조직에서 격변의 시간을 보낸 틀딱 개발자의 2022년 회고">
+<meta property="og:url" content="https://rokag3-gb.github.io/2022/12/2022-retrospect/index.html">
+<meta property="og:site_name" content="GarlicBread Blog">
+<meta property="og:description" content="생동감 있는 개발 조직에서 격변의 시간을 보낸 틀딱 개발자의 2022년 회고">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://rokag3-gb.github.io/img/retrospect-2022-12/20221021_104901.jpg">
+<meta property="article:published_time" content="2022-12-29T15:00:00.000Z">
+<meta property="article:modified_time" content="2024-09-20T04:16:12.658Z">
+<meta property="article:author" content="GarlicBread">
+<meta property="article:tag" content="회고">
+<meta property="article:tag" content="Retrospect">
+<meta property="article:tag" content="틀딱 개발자">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://rokag3-gb.github.io/img/retrospect-2022-12/20221021_104901.jpg">
+  
+  
+  
+  <title>생동감 있는 개발 조직에서 격변의 시간을 보낸 틀딱 개발자의 2022년 회고 - GarlicBread Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"rokag3-gb.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":30,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 35vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>GarlicBread Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Startseite</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Kategorien</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Schlagwörter</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>Über</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/jeju_seongsan.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.6)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="생동감 있는 개발 조직에서 격변의 시간을 보낸 틀딱 개발자의 2022년 회고"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        GarlicBread
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-30 00:00" pubdate>
+          2022-12-30
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          2 minuten
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">생동감 있는 개발 조직에서 격변의 시간을 보낸 틀딱 개발자의 2022년 회고</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="도입"><a href="#도입" class="headerlink" title="도입"></a>도입</h1><p>2022년은 나에게 하나의 새로운 시도였고 흥미진진했고 역동적이었다. SNS 상에 많은 분들 회고 글을 보면서 ‘나도 써볼까? 잼있겠는데?’ 생각만 했었는데 올해부터는 나도 회고 글 쓰는 사람이 되어보려고 한다.</p>
+<h1 id="새-술은-새-부대에"><a href="#새-술은-새-부대에" class="headerlink" title="새 술은 새 부대에"></a>새 술은 새 부대에</h1><p>신규 팀을 빌드하였다. 2020 ~ 2021년까지는 Lead Engineering 조직 내에서 SW 개발 일을 했었고 2022년부터는 보다 전문적이고 집중적으로 Service Development 하기 위해 참여 의사가 있는 크루들을 모으고 신규 팀을 만들어달라고 회사에 요청했고 결국 <code>서비스개발팀</code>이 만들어졌다. (두둥딱)</p>
+<p><img src="/img/retrospect-2022-12/20221021_104901.jpg" srcset="/img/loading.gif" lazyload><br><em>Hype Driven Development (설레발 주도 개발)의 문제점에 대해서 토론하는 모습</em></p>
+<br>
+
+<p>클라우드메이트에 입사하고 난 후부터 사내 또는 고객사에 적절한 애플리케이션을 서비스하여 생산성을 끌어올릴 수 있겠다는 생각을 많이 했었고, 나 혼자만의 생각들이 실제 실무자들에게 필요한 것인지 검증하기 위해 사내 여러 동료들로부터 어떤 애플리케이션이 업무 상 필요한지 디스커션을 많이 하면서 정보를 모았다. 그런 과정을 통해서 2022년 서비스개발팀이 해야할 일에 대해서 경영진에게 보고하고 재가를 받았다. 일을 크게 벌려놓고는 항상 근심이 많다.</p>
+<blockquote>
+<p><code>서비스개발팀</code>에서 해야할 일들은 다음과 같았다.</p>
+<ol>
+<li>신규 서비스 런칭</li>
+</ol>
+<ul>
+<li>IAM 서비스</li>
+<li>영업관리 서비스 (이하 SalesOps)</li>
+<li>챗봇 서비스 (이하 Colson[콜슨])</li>
+</ul>
+<ol start="2">
+<li>캐시 엔진 솔루션 개발</li>
+<li>기존 애플리케이션 유지보수</li>
+<li>고객사 애플리케이션 개발</li>
+<li>고객사 개발 컨설팅</li>
+<li>개발 경험 사내, 사외 전파</li>
+</ol>
+</blockquote>
+<h1 id="신규-서비스-런칭"><a href="#신규-서비스-런칭" class="headerlink" title="신규 서비스 런칭"></a>신규 서비스 런칭</h1><h2 id="IAM-Identity-and-Access-Management"><a href="#IAM-Identity-and-Access-Management" class="headerlink" title="IAM (Identity and Access Management)"></a>IAM (Identity and Access Management)</h2><p><img src="/img/retrospect-2022-12/IAM_Login_UI.png" srcset="/img/loading.gif" lazyload></p>
+<p>사내 임직원 뿐만 아니라 OAuth2.0 통해서 외부 고객사에서도 사용할 수 있는 계정 및 권한 관리 시스템이 꼭 필요했다. 그래서 IAM 서비스부터 개발하였고 KeyCloak과 Hashicorp Vault를 사용해서 사용자, 역할, 권한, 시크릿을 관리할 수 있는 웹애플리케이션을 출시했다. 이 과정에서 RBAC (Roll Base Access Control) 에 대해 깊이 고민 후 적용하게 되었고, OAuth2.0은 반드시 HTTPS 연결을 해야겠다고 판단했다.</p>
+<h2 id="SalesOps"><a href="#SalesOps" class="headerlink" title="SalesOps"></a>SalesOps</h2><p><img src="/img/retrospect-2022-12/SalesOps_UI.png" srcset="/img/loading.gif" lazyload></p>
+<p>IAM 출시 이후에 바로 이어서 SalesOps라고 하는 영업관리 웹애플리케이션 개발에 착수하였다. SalesOps는 영업 조직의 업무를 효율화하고 fileless한 업무 환경으로 가기 위해서 시작하였고, SalesOps에는 영업 관련된 기능과 CRM 일부 기능이 포함되어 2022년 12월까지 CBT(Closed Beta Test)를 진행했고 2023년 초에 정식으로 프로덕션하기 위해 막바지 작업이 한참이다.</p>
+<h2 id="Colson"><a href="#Colson" class="headerlink" title="Colson"></a>Colson</h2><p>SalesOps를 개발하면서 동시에 Colson(콜슨) 챗봇 개발 역시 진행했다. Colson은 사내 다양한 질의응답, 재택&#x2F;휴가 여부, 주변 식당 검색 등 을 챗봇을 통하여 빠르고 간편하게 확인할 수 있게 하기 위하여 기획하였다. Colson은 Teams 메신저 상에서 이용할 수 있는 챗봇이며 9월에 서비스를 시작하여 식당 조회, 근무지(재택,휴가,외근) 등록 및 조회, 생일자 복지 알림, 익명 칭찬 메시지 전달, 기술지원 업무 알림 등 다양한 서비스를 제공하고 있다. 클라우드메이트 구성원들로부터 좋은 평가를 받고 있다고 나는 생각한다. (과연..?)</p>
+<p><img src="/img/retrospect-2022-12/Colson_UI.png" srcset="/img/loading.gif" lazyload></p>
+<hr>
+<p>신규 3가지 서비스를 런칭하면서 느꼈던 점은 굉장히 많은데 조금 요약하자면, 하나의 서비스를 최초 기획, 최종 오픈할 때까지 정말 많은 구성원들에게 서비스 소개를 자주 해야 했었다. 나는 최대한 쉽게 풀어서 설명하려고 했으나 나의 설명 능력 부족으로 인해 듣는 사람은 다르게 해석하거나 그 서비스를 다른 시각에서 바라보는 경우가 많았다. 그래서 “이건 이런 서비스에요. 추가로 원하는게 있나요? 만들어드릴께요.” 형태의 대화를 정말 많이 했다. 추가적으로 이건 “가장 큰 결실”이라고 느꼈던 것은 웹 풀스택에 걸쳐서 클라우드메이트 만의 웹 개발 기준 프레임워크를 (아직 부족하지만) 제시했다는 거다. 이제 이 기준 프레임워크에 맞추어 다양한 서비스 또는 기능 추가를 조금 더 단시간에 적은 노력으로 할 수 있는 기틀을 마련했다고 생각한다.</p>
+<h1 id="좋았던-점"><a href="#좋았던-점" class="headerlink" title="좋았던 점"></a>좋았던 점</h1><p>개인적으로 2022년 가장 큰 즐거움은 팀 크루 10명이 어떻게 하면 즐겁게 일 할 수 있을까? 에 대해서 깊이 고민하고 즐겁고 경쾌하게 서로 업무할 수 있는 환경이 어느 정도는 만들어진 것 같아 그 점이 가장 좋은 기억으로 남는다. 항상 나에게 기술적 조언과 경험 전달을 아끼지 않고 나의 힘든 점을 보듬어주려고 애써주시는 성민님, 인자한 미소와 함께 “나도 이런거 할 수 있으니까 시켜주세요.” 라며 내 부담을 덜어주려고 하시는 원균님, KeyCloak과 프리파라, 포켓몬의 광팬이면서 다양한 부분에서 엄청난 기여를 해주신 광석님, React의 열렬한 지지자이면서 프론트엔드 개발과 프론트엔드 프로젝트의 중심을 잡아주신 그리고 종무식 때 잠시 켜졌던 카메라를 통해 cute한 땡땡이 잠옷을 보여주신 진호님, 타지에서 원격근무하면서도 항상 번뜩이는 아이디어와 개발 센스로 놀라운 퍼포먼스를 보여주시는 진혁님, Airflow를 魔개조하시고 다양한 개발언어를 넘나들며 백엔드에서 다양한 기여해주신 우분투의 신 영빈님, 묵묵히 맡은 페이지를 개발 완수해 내시며 점점 더 개발 가속도가 붙는게 보이는 우윳빛깔 예원님, 생소할 수 있는 프론트엔드 포지션에서 무서운 속도로 성장하고 계시는 효도르 a.k.a 효줌마 효연님, “닷넷이 미래다”라는 격언과 함께 MVVM XAML의 황제이면서 최근에는 REST API를 무서운 속도로 개발하고 계시는 상훈님까지.. 이건 개인의 회고이면서도 팀 구성원에게 감사한 마음을 표현하는 글이다. (수줍수줍)</p>
+<p><img src="/img/retrospect-2022-12/20221021_145219_20.jpg" srcset="/img/loading.gif" lazyload><br><em>2022년 10월경 서비스개발팀 플레이샵하러 실내 야구 경기 중 모두가 빵터진 순간</em></p>
+<p>기술적으로는 Azure 서비스를 적극 활용해서 경험치를 쌓았고 (Container Apps 이거 좋더라.) 닷넷 애플리케이션을 리눅스에서 서빙하면서 다양한 경험을 해볼 수 있어서 좋았다.</p>
+<h1 id="힘들었던-점"><a href="#힘들었던-점" class="headerlink" title="힘들었던 점"></a>힘들었던 점</h1><p>신규 개발과 기존 애플리케이션의 유지 보수를 오간다는 것이 내 두뇌에서 상당한 context switching cost가 발생해서, 일정 관리에 심혈을 기울였다. 종종 외근 나가서 어설픈 초식 몇가지를 선보이며 나의 경험을 표현해야 해서 꽤나 힘들었다.</p>
+<h1 id="아쉬웠던-점"><a href="#아쉬웠던-점" class="headerlink" title="아쉬웠던 점"></a>아쉬웠던 점</h1><p>다양한 개발 환경을 적극적으로, 온전히 내 것으로 만들지 못한 것이 가장 아쉬웠던 점이다. 2023년에는 Go를 학습하여 내가 짠 Go 애플리케이션을 프로덕션 서비스에 적용해볼 생각이다. 프로젝트 매니징 관점에서는, 코드 리뷰를 활발하게 하는 문화를 정착시키지 못하고 프로덕트 출시에 급급했던 면이 있다고 생각한다. 2023년에는 코드 리뷰를 활성화 시키도록 노력할 생각이다. </p>
+<h1 id="2023년도-계획"><a href="#2023년도-계획" class="headerlink" title="2023년도 계획"></a>2023년도 계획</h1><p>개발 조직, 문화 등 큰 기류를 흐트리지 않으면서 다양한 부분에 변화를 주어 내가 하는 일을 조금 더 엔지니어링 쪽으로 집중할 생각이다. 또한 서비스개발팀 내에 다양한 <code>셀</code> 결성을 통하여 하나의 셀 내에서 기획&#x2F;개발&#x2F;QA 를 모두 진행하는 방식으로 프로젝트 진행 방식을 바꾸어보려 한다.</p>
+<p><img src="/img/retrospect-2022-12/%EB%AC%B8%EC%A0%9C%ED%95%B4%EA%B2%B0%EC%9D%983%EC%9A%94%EC%86%8C.jpg" srcset="/img/loading.gif" lazyload><br><em>2023년도에도 많은 공감, 대화, 설득이 필요할 것 같다.</em></p>
+<p>Workflow를 관리하는 애플리케이션을 만들어서 실제 서비스에 적용해볼 생각이다. <code>Airflow, Dagster 같은 훌륭한 애플리케이션이 있는데 바퀴를 왜 재발명하는가?</code> 하는 의문이 들 수 도 있지만, 기성 OSS (Open Source SW) 보다 복잡성은 낮추고 최소한의 필요한 기능을 제공해는 형태로 만들어서 실무에 적용할 계획을 갖고 있다.</p>
+<p>개인적으로는 큰 변화를 줘 볼 생각이다. 내 커리어에 대해서도 진지하게 고민할 생각이다. “데이터” 관련 직무로 조금 더 집중하고 싶다는 생각을 갖고 있다. VPoE (VP of Engineering) 포지션을 내가 수행할 수 있을까에 대한 고민도 하고 있다. 바쁘다는 핑계로 블로그 글을 못썼는데, 내가 주니어일 때 좋은 자료가 부족해서 힘들었던 만큼 그 시절을 떠올리며 좋은 자료를 쓰도록 노력하고자 한다.</p>
+<hr>
+<p>여기까지 생동감 있는 개발 조직에서 격변의 시간을 보낸 틀딱 개발자의 2022년 회고를 마친다.</p>
+<p><img src="/img/retrospect-2022-12/KakaoTalk_20221231_160037996.jpg" srcset="/img/loading.gif" lazyload><br><em>눈이 어마어마하게 내리던 어느 겨울날 눈 구경하는 모습</em></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Story/" class="category-chain-item">Story</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%ED%9A%8C%EA%B3%A0/" class="print-no-link">#회고</a>
+      
+        <a href="/tags/Retrospect/" class="print-no-link">#Retrospect</a>
+      
+        <a href="/tags/%ED%8B%80%EB%94%B1-%EA%B0%9C%EB%B0%9C%EC%9E%90/" class="print-no-link">#틀딱 개발자</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/03/sql-pass-korea-seminar/" title="SQL PASS Korea 세미나 발표 - Azure SQL database의 Geo Replica와 Managed Instance의 Failover group을 통한 CQRS 구현">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">SQL PASS Korea 세미나 발표 - Azure SQL database의 Geo Replica와 Managed Instance의 Failover group을 통한 CQRS 구현</span>
+                        <span class="visible-mobile">Vorheriger</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/12/azure-db-file-iops/" title="Azure SQL 의 data file size 와 IOPS 의 불편한 진실">
+                        <span class="hidden-mobile">Azure SQL 의 data file size 와 IOPS 의 불편한 진실</span>
+                        <span class="visible-mobile">Nächster</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script>
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          Fluid.utils.createCssLink('https://lib.baomitu.com/disqusjs/1.3.0/disqusjs.css');
+          Fluid.utils.createScript('https://lib.baomitu.com/disqusjs/1.3.0/disqus.js', function() {
+            new DisqusJS({
+              shortname: 'https-rokag3-gb-github-io',
+              apikey: ''
+            });
+          });
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Inhaltsverzeichnis</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Suchen</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Stichwort</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <p> <div id="current_date"> <script> date = new Date(); year = date.getFullYear(); month = date.getMonth() + 1; day = date.getDate(); document.getElementById("current_date").innerHTML = "ⓒ " + year + "."; </script> Jayden Kim All Rights Reserved. </div> <!--<a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>--> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Hexo Fluid</span></a> </p> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog funktioniert am besten mit aktiviertem JavaScript</div>
+  </noscript>
+</body>
+</html>
